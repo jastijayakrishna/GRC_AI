@@ -1,0 +1,100 @@
+risk_pattern,iso_27001,soc_2,hipaa,nist_csf,description
+weak_password,A.9.4.3,CC6.1,164.308(a)(5)(ii)(B),PR.AC-7,User accounts allowing weak passwords like password123 or admin without complexity requirements minimum length special characters or uppercase enforcement across systems and applications
+no_mfa,A.9.4.2,CC6.1,164.312(d),PR.AC-7,Multi-factor authentication not enabled for VPN remote access privileged accounts or administrative interfaces requiring only username and password for authentication
+unencrypted_data,A.8.24,CC6.7,164.312(a)(2)(iv),PR.DS-1,Sensitive data including customer information credit cards or personal health information stored in plaintext databases or transmitted over networks without TLS SSL encryption
+missing_access_logs,A.8.15,CC7.2,164.312(b),DE.AE-3,System audit logs for user access authentication privileged operations or data access not enabled collected or retained for security monitoring and forensic investigation
+no_patch_mgmt,A.8.8,CC7.1,164.308(a)(5)(ii)(B),PR.IP-12,Operating systems applications or firmware missing critical security patches months behind update schedules with no vulnerability management or patch deployment process
+admin_privileges,A.9.2.3,CC6.2,164.308(a)(4),PR.AC-6,Excessive users granted domain administrator root or privileged access rights beyond job requirements without justification or periodic review of permissions
+physical_entry,A.11.1.2,CC6.4,164.310(a)(1),PR.AC-2,Physical access controls to server rooms data centers or secure areas using weak door codes badge readers or locks with inadequate monitoring
+vendor_risk,A.15.1.1,CC9.2,164.308(b)(1),ID.SC-2,Third-party vendors suppliers or service providers processing sensitive data without security assessments due diligence reviews or contractual security requirements
+incident_response,A.16.1.1,CC7.3,164.308(a)(6)(i),RS.RP-1,Information security incident response plan procedures playbooks or escalation processes not documented tested or communicated to security operations teams
+backup_failure,A.12.3.1,CC9.1,164.308(a)(7)(ii)(A),PR.IP-4,Backup systems failing corrupted or incomplete with no monitoring validation testing or offsite storage for disaster recovery purposes
+shared_credentials,A.9.2.4,CC6.1,164.308(a)(3),PR.AC-7,DevOps team IT staff or administrators using shared admin accounts with same username and password distributed via Slack email to access production servers databases
+password_never_changed,A.9.4.3,CC6.1,164.308(a)(5)(ii)(D),PR.AC-1,Account passwords not rotated for extended periods 12 to 24 months without password aging policy expiration enforcement or change requirements
+default_credentials,A.9.2.4,CC6.1,164.308(a)(5)(ii)(D),PR.AC-1,Default manufacturer passwords admin admin or root root remaining unchanged on network devices routers switches firewalls or applications after installation
+no_account_lockout,A.9.4.2,CC6.1,164.308(a)(1)(ii)(B),PR.AC-7,Account lockout policy not configured allowing unlimited failed login attempts enabling brute-force password attacks against user or service accounts
+inactive_accounts,A.9.2.6,CC6.2,164.308(a)(3)(ii)(C),PR.AC-4,Dormant user accounts for terminated employees contractors or former staff remaining active enabled with access to systems applications or data
+excessive_permissions,A.9.2.3,CC6.2,164.308(a)(4)(ii)(B),PR.AC-4,Users granted more access permissions file shares database tables or application functions than required for job role violating least privilege principle
+no_access_review,A.9.2.5,CC6.2,164.308(a)(4)(ii)(C),PR.AC-6,Periodic access rights reviews user recertification or permission audits not performed annually or quarterly to validate appropriate access levels
+missing_encryption_transit,A.8.24,CC6.7,164.312(e)(1),PR.DS-2,Sensitive data transmitted over networks without TLS 1.2 SSL encryption using HTTP FTP or unencrypted protocols exposing data to interception
+missing_encryption_rest,A.8.24,CC6.7,164.312(a)(2)(iv),PR.DS-1,Confidential data customer records or payment information stored in plaintext on disk drives databases or file servers without encryption at rest
+unencrypted_backups,A.12.3.1,CC6.7,164.312(a)(2)(iv),PR.DS-1,Backup tapes drives or cloud storage containing sensitive production data not encrypted enabling data theft if media lost stolen or compromised
+usb_devices_allowed,A.8.2.3,CC6.1,164.310(d)(1),PR.AC-3,Removable media USB drives external hard drives or thumb drives allowed without restrictions endpoint controls or monitoring enabling data exfiltration
+no_dlp,A.8.12,CC6.6,164.312(e)(1),PR.DS-5,Data loss prevention DLP controls not implemented to detect prevent or alert on sensitive data being emailed uploaded or transferred outside organization
+public_cloud_misconfiguration,A.8.9,CC6.6,N/A,PR.DS-6,AWS S3 buckets Azure blob storage or cloud resources publicly accessible on internet allowing anonymous downloads of sensitive files or data
+api_keys_hardcoded,A.9.4.5,CC6.1,164.312(a)(2)(i),PR.AC-1,API keys authentication tokens or database passwords embedded hardcoded in source code repositories scripts or configuration files visible in GitHub
+missing_firewall,A.13.1.1,CC6.6,164.312(a)(1),PR.AC-5,Network firewall rules missing misconfigured or allowing any any traffic without segmentation between production development or untrusted networks
+open_ports,A.13.1.3,CC6.6,164.312(a)(1),PR.IP-1,Unnecessary network services SSH RDP FTP or management ports exposed to internet without firewall filtering or IP whitelisting restrictions
+no_network_segmentation,A.13.1.3,CC6.6,164.312(a)(1),PR.AC-5,Production and development networks not segregated using VLANs subnets or firewall zones allowing lateral movement across environments
+wifi_unencrypted,A.13.1.1,CC6.6,164.312(e)(1),PR.AC-5,Wireless networks using WEP weak encryption or no password protection allowing network eavesdropping or unauthorized access to corporate systems
+missing_antivirus,A.12.2.1,CC7.1,164.308(a)(5)(ii)(B),PR.DS-6,Endpoint protection antivirus EDR or malware detection not installed or virus definitions not updated on workstations servers or laptops
+outdated_software,A.12.6.1,CC7.1,164.308(a)(5)(ii)(B),PR.IP-12,Operating systems applications or database software running outdated versions 6 to 12 months behind current patches with known critical vulnerabilities
+eol_systems,A.12.6.1,CC7.1,164.308(a)(8),PR.IP-2,End-of-life software Windows Server 2008 Oracle 11g or Java 7 still in production without vendor support security patches or updates
+no_vulnerability_scanning,A.12.6.1,CC7.1,164.308(a)(8),DE.CM-8,Vulnerability scans using Nessus Qualys or OpenVAS not performed regularly monthly or quarterly to identify security weaknesses in infrastructure
+missing_penetration_testing,A.12.6.1,CC7.1,164.308(a)(8),DE.CM-8,Annual penetration testing ethical hacking or red team exercises not conducted to validate security controls identify exploit paths or weaknesses
+no_security_training,A.7.2.2,CC1.4,164.308(a)(5)(i),PR.AT-1,Security awareness training phishing education or safe computing practices not provided to employees contractors or new hires annually or quarterly
+phishing_susceptibility,A.7.2.2,CC1.4,164.308(a)(5)(i),PR.AT-1,Employees clicking on simulated phishing emails entering credentials on fake login pages or opening malicious attachments during security tests
+no_background_checks,A.7.1.1,CC1.4,164.308(a)(3)(ii)(B),PR.IP-11,Pre-employment background screening criminal checks or employment verification not performed for new hires with access to sensitive data or systems
+missing_ndas,A.13.2.4,CC9.2,164.308(b)(1),ID.GV-3,Non-disclosure agreements confidentiality agreements or data protection clauses not signed by employees contractors vendors or third parties
+byod_unmanaged,A.6.2.1,CC6.6,164.310(d)(1),PR.AC-3,Personal devices iPhones Android tablets or laptops accessing corporate email or data without MDM Intune or security controls enrollment
+lost_laptop,A.11.2.6,CC6.4,164.310(d)(2),PR.PT-2,Laptop computer or mobile device theft loss or misplacement containing unencrypted sensitive data customer information or corporate credentials
+unlocked_workstations,A.11.2.8,CC6.4,164.310(b),PR.AC-2,Employees leaving computer workstations unlocked unattended in open offices allowing unauthorized physical access to systems or data
+server_room_unlocked,A.11.1.2,CC6.4,164.310(a)(1),PR.AC-2,Data center server room or network closet unlocked accessible to cleaning staff visitors without badge readers logging or escort requirements
+no_visitor_logs,A.11.1.2,CC6.4,164.310(a)(2)(iii),PR.AC-2,Visitor access to office buildings secure areas not recorded logged or requiring escort by authorized employees with sign-in sign-out procedures
+missing_cctv,A.11.1.2,CC6.4,164.310(a)(2)(ii),PR.AC-2,Security cameras video surveillance or CCTV not installed in server rooms entrance lobbies or sensitive areas for physical security monitoring
+no_asset_inventory,A.8.1.1,CC6.3,164.310(d)(1),ID.AM-1,IT asset inventory register or CMDB not maintained tracking servers workstations network devices software licenses or hardware purchases
+shadow_it,A.8.1.1,CC6.3,164.308(a)(8),ID.AM-2,Unapproved SaaS applications cloud services Dropbox Slack or tools in use bypassing IT procurement security reviews or vendor assessments
+no_data_classification,A.8.2.1,CC6.5,164.308(a)(1)(ii)(A),ID.AM-5,Sensitive data not labeled classified or tagged as confidential public internal enabling appropriate handling retention or access controls
+missing_retention_policy,A.8.3.3,CC6.5,164.310(d)(2)(i),PR.IP-6,Data retention schedules disposal timelines or archive policies undefined for email documents databases backups enabling regulatory compliance
+no_secure_disposal,A.8.3.2,CC6.5,164.310(d)(2)(ii),PR.IP-6,Hard drives storage media or decommissioned servers not securely wiped using DBAN shredded or destroyed before disposal recycling donation
+vendor_no_assessment,A.15.1.1,CC9.2,164.308(b)(1),ID.SC-2,Third-party vendors SaaS providers or suppliers not undergoing security assessments questionnaires SOC 2 reviews before processing sensitive data
+vendor_no_contract,A.15.1.2,CC9.2,164.314(a)(1),ID.SC-1,Vendor agreements contracts or MSAs missing security requirements data protection clauses incident notification SLAs or right to audit provisions
+vendor_no_monitoring,A.15.2.1,CC9.2,164.308(b)(3),ID.SC-4,Ongoing vendor compliance monitoring security posture reviews annual attestations or SOC 2 report validation not tracked by procurement teams
+cloud_shared_tenancy,A.9.4.4,CC6.6,N/A,PR.DS-6,Multi-tenant cloud environments AWS RDS shared databases or containerized infrastructure without tenant isolation network segmentation or access controls
+no_incident_plan,A.16.1.1,CC7.3,164.308(a)(6)(i),RS.RP-1,Incident response plan security breach procedures ransomware playbooks or escalation workflows not documented tested or distributed to SOC teams
+incident_not_reported,A.16.1.4,CC7.4,164.308(a)(6)(ii),RS.CO-2,Security incidents breaches or suspicious activity not escalated reported to management legal compliance or executive leadership within required timelines
+no_forensics_capability,A.16.1.7,CC7.3,164.308(a)(6)(ii),RS.AN-3,Digital forensics tools memory imaging disk analysis or log correlation capabilities missing from security operations preventing incident investigation
+missing_breach_notification,A.16.1.4,CC7.5,164.408,RS.CO-3,Data breach notification procedures customer communication regulatory reporting to HHS FTC or state attorneys general undefined or not tested
+no_disaster_recovery,A.17.1.2,CC9.1,164.308(a)(7)(ii)(B),RC.RP-1,Disaster recovery plan business continuity procedures or failover runbooks not documented tested or validated annually for ransomware natural disasters
+rpo_rto_undefined,A.17.1.2,CC9.1,164.308(a)(7)(ii)(C),RC.RP-1,Recovery point objective RPO recovery time objective RTO or maximum tolerable downtime MTD not defined documented or aligned with SLAs
+backups_not_tested,A.12.3.1,CC9.1,164.308(a)(7)(ii)(D),PR.IP-4,Backup restoration processes never tested validated or rehearsed quarterly resulting in corrupted failed or incomplete recovery during outages
+single_point_failure,A.17.2.1,CC9.1,N/A,PR.PT-5,Critical systems databases or network components without redundancy high availability clustering load balancing or failover creating single points of failure
+change_management_missing,A.12.1.2,CC8.1,N/A,PR.IP-3,Production system changes deployments or configuration updates not following approval process CAB review testing rollback procedures or documentation
+no_code_review,A.14.2.8,CC8.1,N/A,PR.DS-6,Source code not peer reviewed for security vulnerabilities SQL injection XSS or hardcoded credentials before deployment to production environments
+missing_logging,A.12.4.1,CC7.2,164.312(b),DE.AE-3,System audit logs authentication events privileged operations or data access not enabled configured or collected on servers applications databases
+logs_not_monitored,A.12.4.1,CC7.2,164.308(a)(1)(ii)(D),DE.CM-1,Security logs SIEM alerts or IDS notifications not reviewed monitored or analyzed by SOC analysts enabling undetected breaches
+log_retention_short,A.12.4.2,CC7.2,164.312(b),DE.AE-1,Audit logs deleted purged or rotated before compliance retention periods HIPAA 6 years SOC 2 7 years expiring forensic evidence
+no_siem,A.12.4.1,CC7.2,N/A,DE.AE-2,Security information and event management SIEM Splunk QRadar or log aggregation platform not implemented for centralized monitoring correlation alerting
+sql_injection,A.14.2.5,CC8.1,N/A,PR.DS-6,Web applications or APIs vulnerable to SQL injection attacks allowing attackers to manipulate database queries extract data or execute malicious commands
+xss_vulnerability,A.14.2.5,CC8.1,N/A,PR.DS-6,Cross-site scripting XSS vulnerabilities in web forms input fields or URL parameters enabling attackers to inject malicious JavaScript steal session cookies
+csrf_missing,A.14.2.5,CC8.1,N/A,PR.DS-6,Cross-site request forgery CSRF protection tokens not implemented allowing attackers to execute unauthorized actions on behalf of authenticated users
+insecure_deserialization,A.14.2.5,CC8.1,N/A,PR.DS-6,Applications deserializing untrusted data from JSON XML or pickle formats enabling remote code execution privilege escalation or denial of service
+xxe_vulnerability,A.14.2.5,CC8.1,N/A,PR.DS-6,XML external entity XXE injection vulnerabilities in SOAP REST APIs or XML parsers allowing file disclosure SSRF or denial of service attacks
+broken_authentication,A.9.4.2,CC6.1,164.312(d),PR.AC-7,Authentication mechanisms session management or credential storage using weak algorithms MD5 SHA1 or insecure session tokens enabling account takeover
+insecure_direct_object_reference,A.9.4.1,CC6.1,N/A,PR.AC-4,Direct object references in URLs exposing internal IDs database keys allowing unauthorized access to resources files or user data
+security_misconfiguration,A.8.9,CC6.6,N/A,PR.IP-1,Default configurations error messages stack traces or debug modes enabled in production exposing sensitive information system architecture or credentials
+sensitive_data_exposure,A.8.24,CC6.7,164.312(a)(2)(iv),PR.DS-1,Sensitive information credit cards SSNs or passwords exposed in URL parameters logs error messages or browser cache
+insufficient_logging_monitoring,A.12.4.1,CC7.2,164.312(b),DE.AE-3,Application security events authentication failures authorization violations or suspicious activity not logged monitored or alerted enabling undetected attacks
+api_no_rate_limiting,A.13.1.1,CC6.6,N/A,PR.AC-5,API endpoints REST services or GraphQL interfaces without rate limiting throttling enabling brute-force attacks credential stuffing or denial of service
+api_broken_object_auth,A.9.4.1,CC6.1,N/A,PR.AC-4,API authorization checks not validating user permissions for object access allowing horizontal privilege escalation accessing other users data
+api_excessive_data,A.8.11,CC6.6,N/A,PR.DS-3,APIs returning excessive data unnecessary fields or complete database records enabling information disclosure reconnaissance or data scraping
+api_no_encryption,A.8.24,CC6.7,164.312(e)(1),PR.DS-2,API traffic credentials or sensitive payloads transmitted over HTTP without TLS SSL encryption exposing data to interception man-in-middle attacks
+api_missing_versioning,A.12.1.2,CC8.1,N/A,PR.IP-3,API versioning deprecation strategy or backward compatibility not implemented causing breaking changes for integrations or downstream applications
+graphql_introspection,A.14.2.1,CC8.1,N/A,PR.DS-6,GraphQL introspection queries enabled in production exposing entire schema object types fields enabling reconnaissance for targeted attacks
+graphql_query_depth,A.13.1.1,CC6.6,N/A,PR.AC-5,GraphQL queries without depth limiting complexity analysis or query cost calculation enabling denial of service through nested resource-intensive queries
+docker_privileged_mode,A.12.1.3,CC6.6,N/A,PR.AC-6,Docker containers running in privileged mode with host access unrestricted capabilities or root permissions violating container isolation principle
+docker_exposed_socket,A.12.1.3,CC6.6,N/A,PR.AC-5,Docker daemon socket exposed mounted or accessible to containers enabling container breakout host system compromise or privilege escalation
+docker_unscanned_images,A.12.6.1,CC7.1,N/A,PR.IP-12,Container images not scanned for vulnerabilities malware or misconfigurations using Trivy Clair Snyk before deployment to production registries
+kubernetes_no_rbac,A.9.2.3,CC6.2,N/A,PR.AC-6,Kubernetes role-based access control RBAC not configured granting excessive cluster-admin permissions to service accounts or users
+kubernetes_secrets_exposed,A.9.4.5,CC6.1,N/A,PR.AC-1,Kubernetes secrets API keys database passwords stored in plain text ConfigMaps or environment variables without encryption secrets management vault
+kubernetes_no_network_policy,A.13.1.3,CC6.6,N/A,PR.AC-5,Kubernetes network policies not implemented allowing unrestricted pod-to-pod east-west traffic enabling lateral movement after container compromise
+serverless_over_permissive,A.9.2.3,CC6.2,N/A,PR.AC-6,AWS Lambda Azure Functions or serverless IAM roles granted excessive permissions s3 full access or admin rights violating least privilege
+serverless_no_timeout,A.12.1.4,CC6.6,N/A,DE.AE-5,Serverless functions without execution timeout or memory limits enabling denial of wallet attacks through resource exhaustion or infinite loops
+iam_wildcard_policies,A.9.2.3,CC6.2,N/A,PR.AC-4,AWS IAM Azure AD policies using wildcard permissions asterisk on resources actions enabling privilege escalation or unauthorized access
+iam_no_mfa_enforce,A.9.4.2,CC6.1,164.312(d),PR.AC-7,AWS root account administrative IAM users or privileged roles not enforcing multi-factor authentication MFA for console API access
+cloud_storage_versioning_off,A.12.3.1,CC6.7,N/A,PR.IP-4,S3 bucket versioning Azure blob soft delete not enabled preventing recovery from accidental deletion ransomware or malicious file overwrites
+cloud_no_encryption_kms,A.8.24,CC6.7,164.312(a)(2)(iv),PR.DS-1,Cloud storage RDS EBS volumes not encrypted using KMS customer-managed keys enabling data exposure if snapshots backups compromised
+saml_signature_validation,A.9.4.2,CC6.1,N/A,PR.AC-7,SAML single sign-on SSO implementations not validating digital signatures certificate chains enabling authentication bypass or XML signature wrapping attacks
+oauth_redirect_uri_validation,A.14.1.2,CC6.1,N/A,PR.AC-7,OAuth 2.0 OpenID Connect redirect URI not validated against whitelist enabling authorization code theft open redirect attacks
+jwt_no_signature_verify,A.9.4.3,CC6.1,N/A,PR.AC-7,JSON Web Tokens JWT not validating signatures using weak algorithms none or shared secrets enabling token forgery session hijacking
+session_fixation,A.9.4.2,CC6.1,N/A,PR.AC-7,Session identifiers not regenerated after authentication login enabling session fixation attacks where attacker sets victim session ID beforehand

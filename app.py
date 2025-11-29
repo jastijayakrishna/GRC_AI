@@ -5,10 +5,29 @@ import pandas as pd
 import re
 import logging
 from datetime import datetime
+import time
+import rag_engine  # Import our new RAG module
 
 # --- CONFIGURATION ---
-MODEL_NAME = "qwen3-coder:30b"
+MODEL_NAME = "llama3.2"
 MAX_INPUT_LENGTH = 10000  # Prevent abuse
+OLLAMA_MAX_RETRIES = 3  # Number of retry attempts
+
+# --- CACHED INITIALIZATION ---
+@st.cache_resource
+def initialize_rag_engine():
+    """
+    Initialize and cache the RAG engine (ChromaDB collections).
+    This runs once and is cached across all sessions for better performance.
+    """
+    rag_engine.load_crosswalk_db()
+    return {
+        'crosswalk': rag_engine.crosswalk_collection,
+        'policy': rag_engine.policy_collection
+    }
+
+# Load RAG engine (cached)
+rag_collections = initialize_rag_engine()
 
 # --- LOGGING SETUP ---
 logging.basicConfig(
@@ -77,6 +96,37 @@ def check_ollama_status():
         logging.error(f"Ollama status check failed: {e}")
         return False
 
+def ollama_chat_with_retry(model, messages, options=None, max_retries=OLLAMA_MAX_RETRIES):
+    """
+    Call Ollama chat with exponential backoff retry logic.
+
+    Args:
+        model (str): Model name
+        messages (list): Chat messages
+        options (dict): Ollama options (timeout, etc.)
+        max_retries (int): Maximum retry attempts
+
+    Returns:
+        dict: Ollama response
+
+    Raises:
+        Exception: If all retries fail
+    """
+    for attempt in range(max_retries):
+        try:
+            response = ollama.chat(model=model, messages=messages, options=options)
+            return response
+        except Exception as e:
+            if attempt == max_retries - 1:
+                # Last attempt failed, re-raise
+                logging.error(f"Ollama call failed after {max_retries} attempts: {e}")
+                raise
+
+            # Exponential backoff: 1s, 2s, 4s
+            wait_time = 2 ** attempt
+            logging.warning(f"Ollama call failed (attempt {attempt + 1}/{max_retries}), retrying in {wait_time}s: {e}")
+            time.sleep(wait_time)
+
 # --- SIDEBAR ---
 with st.sidebar:
     st.image("https://img.icons8.com/fluency/96/security-checked.png", width=60)
@@ -93,6 +143,29 @@ with st.sidebar:
     st.markdown("---")
     st.caption("🔒 Privacy Mode: Active (No Cloud)")
     st.caption(f"📊 Max Input: {MAX_INPUT_LENGTH} chars")
+
+    # --- RAG: POLICY UPLOAD ---
+    st.markdown("---")
+    st.subheader("📚 Knowledge Base")
+    uploaded_file = st.file_uploader("Upload Policy (PDF)", type="pdf")
+    
+    if uploaded_file:
+        # Save temp file
+        temp_path = f"temp_{uploaded_file.name}"
+        with open(temp_path, "wb") as f:
+            f.write(uploaded_file.getbuffer())
+        
+        with st.spinner("🧠 Ingesting Policy..."):
+            success, msg = rag_engine.ingest_policy(temp_path)
+            if success:
+                st.success("Policy Learned!")
+            else:
+                st.error(f"Error: {msg}")
+        
+        # Cleanup
+        import os
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
 
 # --- MAIN UI ---
 st.title("🛡️ Automated Risk & Compliance Mapper")
@@ -132,21 +205,97 @@ if analyze_btn and audit_input:
                 # Log the audit request (without full content for privacy)
                 logging.info(f"Audit analysis started - Input length: {len(clean_input)} chars")
 
-                system_prompt = """
-                You are an expert GRC Automation Engine.
-                Map the user's audit findings to ISO 27001:2022 controls.
-                Output STRICT JSON only. No markdown. No chatter.
-                Structure: {"risks": [{"description": "...", "iso_control": "...", "recommendation": "..."}]}
-                """
+                # --- STEP 1: GET DATABASE MAPPINGS (ELIMINATES HALLUCINATIONS) ---
+                db_mappings = rag_engine.get_framework_mappings(clean_input)
+                
+                # --- STEP 2: RETRIEVE POLICY CONTEXT ---
+                context = rag_engine.query_policy(clean_input)
+                context_text = f"\n\nRELEVANT COMPANY POLICY:\n{context}" if context else ""
 
-                response = ollama.chat(model=MODEL_NAME, messages=[
-                    {'role': 'system', 'content': system_prompt},
-                    {'role': 'user', 'content': clean_input},
-                ])
+                # --- STEP 3: BUILD PROMPT BASED ON DATABASE RESULTS ---
+                if db_mappings:
+                    # Database found a match - use verified control IDs
+                    st.info(f"✅ Matched to risk pattern: {db_mappings.get('pattern_name', 'Unknown')}")
+                    
+                    system_prompt = f"""
+                    You are a GRC compliance analyst.
+                    
+                    The finding has been mapped to these verified controls from our database:
+                    - ISO 27001: {db_mappings.get('iso_27001', 'N/A')}
+                    - SOC 2: {db_mappings.get('soc_2', 'N/A')}
+                    - HIPAA: {db_mappings.get('hipaa', 'N/A')}
+                    - NIST CSF: {db_mappings.get('nist_csf', 'N/A')}
+                    
+                    {context_text}
+                    
+                    YOUR TASK:
+                    1. Write a clear, professional risk description (2-3 sentences)
+                    2. Write an actionable remediation recommendation (specific steps)
+                    3. If company policy is provided above, reference it in your recommendation
+                    
+                    Output STRICT JSON only. No markdown. No explanation.
+                    Structure: 
+                    {{
+                        "risks": [
+                            {{
+                                "description": "Clear description of the security risk",
+                                "recommendation": "Specific remediation steps",
+                                "mappings": {{
+                                    "iso_27001": "{db_mappings.get('iso_27001', 'N/A')}",
+                                    "soc_2": "{db_mappings.get('soc_2', 'N/A')}",
+                                    "hipaa": "{db_mappings.get('hipaa', 'N/A')}",
+                                    "nist_csf": "{db_mappings.get('nist_csf', 'N/A')}"
+                                }}
+                            }}
+                        ]
+                    }}
+                    """
+                else:
+                    # No database match - fallback to LLM (but warn user)
+                    st.warning("⚠️ No exact database match found. Using AI analysis (may be less accurate).")
+                    
+                    system_prompt = f"""
+                    You are an expert GRC Automation Engine.
+                    Map the user's audit findings to the following frameworks:
+                    1. ISO 27001:2022
+                    2. SOC 2 Type II
+                    3. HIPAA Security Rule
+                    4. NIST CSF 2.0
+                    
+                    {context_text}
+                    
+                    If the company policy is provided above, YOU MUST PRIORITIZE IT over general standards.
+                    Output STRICT JSON only. No markdown. No chatter.
+                    Structure: 
+                    {{
+                        "risks": [
+                            {{
+                                "description": "...", 
+                                "recommendation": "...",
+                                "mappings": {{
+                                    "iso_27001": "Control ID (e.g. A.9.4.1)",
+                                    "soc_2": "Criteria ID (e.g. CC6.1)",
+                                    "hipaa": "Rule ID (e.g. 164.312(a)(1))",
+                                    "nist_csf": "Function ID (e.g. PR.AC-7)"
+                                }}
+                            }}
+                        ]
+                    }}
+                    """
+
+                # --- STEP 4: CALL LLM (with retry logic) ---
+                response = ollama_chat_with_retry(
+                    model=MODEL_NAME,
+                    messages=[
+                        {'role': 'system', 'content': system_prompt},
+                        {'role': 'user', 'content': clean_input},
+                    ],
+                    options={'timeout': 120.0}  # 2 minute timeout
+                )
 
                 raw_output = response['message']['content']
 
-                # Robust Extraction
+                # --- STEP 5: EXTRACT AND VALIDATE JSON ---
                 data = extract_json(raw_output)
 
                 if data:
@@ -167,6 +316,9 @@ if analyze_btn and audit_input:
                     with st.expander("Debug Raw Output"):
                         st.code(raw_output)
 
+            except TimeoutError:
+                st.error("⏱️ Request timed out. The model may be overloaded. Please try again.")
+                logging.error("Ollama API request timed out")
             except Exception as e:
                 st.error(f"System Error: {str(e)}")
                 logging.error(f"System error during analysis: {e}")
@@ -178,13 +330,25 @@ if st.session_state.results:
         for idx, risk in enumerate(st.session_state.results, 1):
             # Safety check for keys
             desc = risk.get('description', 'Unknown')
-            iso = risk.get('iso_control', 'General')
             rec = risk.get('recommendation', 'None')
+            mappings = risk.get('mappings', {})
 
-            with st.expander(f"⚠️ {iso} - {desc[:40]}...", expanded=True):
-                st.markdown(f"**Risk #{idx}:** {desc}")
-                st.markdown(f"**Control:** `{iso}`")
-                st.info(f"**Fix:** {rec}")
+            with st.expander(f"⚠️ Risk #{idx} - {desc[:40]}...", expanded=True):
+                st.markdown(f"**Description:** {desc}")
+                
+                # Multi-Framework Tabs
+                tab1, tab2, tab3, tab4 = st.tabs(["ISO 27001", "SOC 2", "HIPAA", "NIST CSF"])
+                
+                with tab1:
+                    st.info(f"**ISO Control:** `{mappings.get('iso_27001', 'N/A')}`")
+                with tab2:
+                    st.info(f"**SOC 2 Criteria:** `{mappings.get('soc_2', 'N/A')}`")
+                with tab3:
+                    st.info(f"**HIPAA Rule:** `{mappings.get('hipaa', 'N/A')}`")
+                with tab4:
+                    st.info(f"**NIST Function:** `{mappings.get('nist_csf', 'N/A')}`")
+
+                st.success(f"**Recommendation:** {rec}")
 
         # EXPORT TO CSV
         df = pd.DataFrame(st.session_state.results)

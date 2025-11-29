@@ -38,6 +38,12 @@ audit_trail.log
 *.sqlite
 *.db
 
+# ChromaDB
+chroma_db/
+
+# Temporary files
+temp_*.pdf
+
 # IDE
 .vscode/
 .idea/
