@@ -11,7 +11,7 @@ This tool runs entirely **offline** (Local Inference). It uses a local language 
 ## ⚙️ Tech Stack
 * **LLM Engine:** Ollama (Llama 3.2) - Local inference, no cloud calls
 * **Vector Database:** ChromaDB with sentence-transformers embeddings
-* **RAG Implementation:** 66-pattern framework crosswalk with semantic search
+* **RAG Implementation:** 101-pattern framework crosswalk with semantic search
 * **Frontend:** Streamlit with multi-framework tabbed UI
 * **Security:** Input sanitization + ISO A.12.4 compliant audit logging
 
@@ -91,14 +91,14 @@ User Input (Audit Finding)
     ↓
 Input Sanitization (regex, length check)
     ↓
-ChromaDB Semantic Search (66 patterns)
+ChromaDB Semantic Search (101 patterns)
     ↓
 Pattern Match? ──YES→ Use verified control IDs
     ↓              ↓
     NO           Database Mappings
     ↓              ↓
 LLM Fallback ←────┘
-(Llama 3.2)
+(Llama 3.2 with retry logic)
     ↓
 JSON Validation & Risk Description
     ↓
@@ -118,7 +118,9 @@ Audit Logger (metadata only)
 
 - [x] Multi-framework support (ISO 27001, SOC 2, HIPAA, NIST CSF)
 - [x] RAG implementation with ChromaDB
-- [x] Semantic pattern matching (66 risk patterns)
+- [x] Semantic pattern matching (101 risk patterns)
+- [x] Unit test coverage (31 tests)
+- [x] Production optimizations (caching, retry logic)
 - [ ] Expand to 200+ risk patterns (industry-specific)
 - [ ] PDF report generation with branding
 - [ ] Historical analysis dashboard
